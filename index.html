@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Captora – Instantly Extract Text From Your Screen</title>
+  <link rel="icon" type="image/png" sizes="64x64" href="logo_64.png" />
+  <link rel="icon" type="image/png" sizes="128x128" href="logo_128.png" />
+  <link rel="apple-touch-icon" sizes="250x250" href="logo_250.png" />
+  <meta property="og:title" content="Captora – Instantly Extract Text From Your Screen" />
+  <meta property="og:image" content="logo_250.png" />
+  <meta property="og:type" content="website" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary:      #2563eb;
+      --primary-dark: #1d4ed8;
+      --accent:       #0ea5e9;
+      --dark:         #0f172a;
+      --dark2:        #1e293b;
+      --mid:          #334155;
+      --muted:        #64748b;
+      --light:        #f1f5f9;
+      --lighter:      #f8fafc;
+      --white:        #ffffff;
+      --green:        #16a34a;
+      --red:          #dc2626;
+      --amber:        #d97706;
+      --border:       #e2e8f0;
+      --radius:       12px;
+      --shadow:       0 4px 24px rgba(15,23,42,.09);
+      --shadow-lg:    0 10px 40px rgba(15,23,42,.14);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--lighter);
+      color: var(--dark);
+      line-height: 1.68;
+    }
+
+    a { color: inherit; }
+
+
+    /* ─── HEADER / NAV ────────────────────────────────────── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: rgba(255,255,255,.95);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 1px 8px rgba(15,23,42,.06);
+    }
+
+    nav {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0 28px;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    .logo img {
+      height: 44px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--mid);
+      font-size: .92rem;
+      font-weight: 500;
+      padding: 7px 15px;
+      border-radius: 8px;
+      transition: background .14s, color .14s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active { background: var(--light); color: var(--dark); }
+
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--primary);
+      color: var(--white) !important;
+      padding: 8px 20px;
+      border-radius: 9px;
+      font-weight: 600;
+      font-size: .88rem;
+      text-decoration: none;
+      box-shadow: 0 2px 10px rgba(37,99,235,.3);
+      transition: background .14s, transform .14s, box-shadow .14s;
+    }
+
+    .nav-cta:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(37,99,235,.4);
+    }
+
+    /* hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 6px;
+      border: none;
+      background: none;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--mid);
+      border-radius: 2px;
+      transition: transform .25s, opacity .25s;
+    }
+    .mobile-menu {
+      display: none;
+      flex-direction: column;
+      background: var(--white);
+      border-top: 1px solid var(--border);
+      padding: 14px 28px 20px;
+      gap: 4px;
+    }
+    .mobile-menu a {
+      text-decoration: none;
+      color: var(--mid);
+      font-size: .95rem;
+      padding: 9px 12px;
+      border-radius: 8px;
+    }
+    .mobile-menu a:hover { background: var(--light); }
+    .mobile-menu .nav-cta {
+      margin-top: 8px;
+      justify-content: center;
+    }
+
+    /* ─── BUTTONS ─────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 26px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: .95rem;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: transform .15s, box-shadow .15s, background .14s;
+      line-height: 1;
+    }
+    .btn-lg { padding: 14px 34px; font-size: 1.02rem; border-radius: 11px; }
+
+    .btn-primary {
+      background: var(--primary);
+      color: var(--white);
+      box-shadow: 0 3px 14px rgba(37,99,235,.38);
+    }
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 22px rgba(37,99,235,.48);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--white);
+      border: 2px solid rgba(255,255,255,.45);
+    }
+    .btn-outline:hover { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.7); }
+
+    .btn-white {
+      background: var(--white);
+      color: var(--primary-dark);
+      box-shadow: 0 2px 12px rgba(0,0,0,.12);
+    }
+    .btn-white:hover {
+      background: #eff6ff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 18px rgba(0,0,0,.15);
+    }
+
+    .btn-ghost-dark {
+      background: rgba(255,255,255,.12);
+      color: var(--white);
+      border: 1.5px solid rgba(255,255,255,.28);
+    }
+    .btn-ghost-dark:hover { background: rgba(255,255,255,.22); }
+
+    /* ─── HERO ────────────────────────────────────────────── */
+    #hero {
+      background: linear-gradient(145deg, #0a1628 0%, #0f2044 45%, #102a56 100%);
+      color: var(--white);
+      padding: 100px 28px 90px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    #hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 65% 55% at 50% -10%, rgba(37,99,235,.28), transparent),
+        radial-gradient(ellipse 40% 40% at 80% 80%, rgba(14,165,233,.12), transparent);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(37,99,235,.22);
+      border: 1px solid rgba(96,165,250,.4);
+      color: #93c5fd;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      padding: 5px 16px;
+      border-radius: 99px;
+      margin-bottom: 30px;
+    }
+    .hero-badge .dot {
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .4; }
+    }
+
+    #hero h1 {
+      font-size: clamp(2.1rem, 5.5vw, 3.6rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -.025em;
+      margin-bottom: 22px;
+    }
+    #hero h1 .highlight {
+      background: linear-gradient(90deg, #60a5fa 0%, #38bdf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    #hero .subtitle {
+      font-size: 1.13rem;
+      color: #94a3b8;
+      max-width: 560px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 44px;
+    }
+
+    .hero-pills {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.14);
+      color: #94a3b8;
+      font-size: .8rem;
+      padding: 5px 14px;
+      border-radius: 99px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ─── SHARED LAYOUT ───────────────────────────────────── */
+    section { padding: 84px 28px; }
+    .section-alt { background: var(--white); }
+
+    .wrap { max-width: 1100px; margin: 0 auto; }
+
+    .section-eyebrow {
+      display: inline-block;
+      background: #eff6ff;
+      color: var(--primary);
+      font-size: .73rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 99px;
+      margin-bottom: 14px;
+    }
+
+    h2.section-title {
+      font-size: clamp(1.7rem, 3.2vw, 2.3rem);
+      font-weight: 800;
+      letter-spacing: -.02em;
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+
+    p.section-sub {
+      color: var(--muted);
+      font-size: 1.03rem;
+      max-width: 580px;
+      margin-bottom: 52px;
+    }
+
+    /* ─── FEATURE CARDS ───────────────────────────────────── */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 22px;
+    }
+
+    .feature-card {
+      background: var(--lighter);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 30px 28px;
+      transition: transform .18s, box-shadow .18s, border-color .18s;
+    }
+    .section-alt .feature-card { background: var(--lighter); }
+    section:not(.section-alt) .feature-card { background: var(--white); }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: #bfdbfe;
+    }
+
+    .f-icon {
+      width: 50px; height: 50px;
+      border-radius: 13px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.55rem;
+      margin-bottom: 18px;
+    }
+    .f-blue   { background: #dbeafe; }
+    .f-green  { background: #dcfce7; }
+    .f-purple { background: #ede9fe; }
+    .f-orange { background: #ffedd5; }
+    .f-rose   { background: #ffe4e6; }
+    .f-cyan   { background: #cffafe; }
+
+    .feature-card h3 {
+      font-size: 1.04rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .feature-card p {
+      font-size: .91rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ─── HOW IT WORKS ────────────────────────────────────── */
+    .steps-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 36px;
+    }
+
+    .step {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .step-badge {
+      flex-shrink: 0;
+      width: 46px; height: 46px;
+      background: var(--primary);
+      color: var(--white);
+      border-radius: 50%;
+      font-weight: 800;
+      font-size: 1.1rem;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 3px 12px rgba(37,99,235,.4);
+    }
+
+    .step h3 {
+      font-size: 1.02rem;
+      font-weight: 700;
+      margin-bottom: 7px;
+    }
+    .step p { font-size: .9rem; color: var(--muted); }
+
+    /* ─── USE CASES ───────────────────────────────────────── */
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 20px;
+    }
+
+    .use-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 22px;
+      text-align: center;
+      transition: transform .18s, box-shadow .18s;
+    }
+    .use-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+    .use-card .emoji { font-size: 2.6rem; margin-bottom: 14px; display: block; }
+    .use-card h3 { font-size: .98rem; font-weight: 700; margin-bottom: 8px; }
+    .use-card p  { font-size: .87rem; color: var(--muted); line-height: 1.6; }
+
+    /* ─── COMPARISON TABLE ────────────────────────────────── */
+    .table-scroll {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .91rem;
+      min-width: 580px;
+    }
+
+    thead th {
+      background: var(--dark);
+      color: var(--white);
+      padding: 15px 22px;
+      text-align: left;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    thead th:first-child { border-radius: 12px 0 0 0; }
+    thead th:last-child  { border-radius: 0 12px 0 0; }
+    thead th.col-hl { background: var(--primary); }
+
+    tbody td {
+      padding: 13px 22px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: #f8fafc; }
+    tbody td.col-hl { background: #eff6ff; }
+    tbody tr:hover td.col-hl { background: #dbeafe; }
+    tbody td:first-child { font-weight: 600; color: var(--dark); }
+
+    .chk  { color: var(--green); font-size: 1.1rem; font-weight: 700; }
+    .crs  { color: var(--red);   font-size: 1.1rem; font-weight: 700; }
+    .prt  { color: var(--amber); font-size: .95rem; font-weight: 600; }
+
+    .table-legend {
+      margin-top: 12px;
+      font-size: .8rem;
+      color: var(--muted);
+    }
+
+    /* ─── SPECS ───────────────────────────────────────────── */
+    .specs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      max-width: 820px;
+    }
+
+    .spec-box {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .spec-box table { min-width: unset; }
+    .spec-box td {
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border);
+      font-size: .9rem;
+    }
+    .spec-box tr:last-child td { border-bottom: none; }
+    .spec-box td:first-child { color: var(--muted); width: 48%; }
+    .spec-box td:last-child  { font-weight: 600; }
+
+    /* ─── OPTIMIZATION ────────────────────────────────────── */
+    code {
+      background: var(--light);
+      border-radius: 5px;
+      padding: 1px 6px;
+      font-family: 'Cascadia Code', Consolas, monospace;
+      font-size: .85em;
+    }
+
+    /* ─── TROUBLESHOOTING ─────────────────────────────────── */
+    .trouble-stack { display: grid; gap: 16px; max-width: 840px; }
+
+    .trouble-card {
+      display: flex;
+      gap: 18px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 24px;
+      transition: box-shadow .18s;
+    }
+    .trouble-card:hover { box-shadow: var(--shadow); }
+    .trouble-card .t-ico { font-size: 1.6rem; flex-shrink: 0; margin-top: 1px; }
+    .trouble-card h4 { font-size: .97rem; font-weight: 700; margin-bottom: 6px; }
+    .trouble-card p  { font-size: .88rem; color: var(--muted); line-height: 1.65; }
+
+    /* ─── PRO TIPS ────────────────────────────────────────── */
+    .tips-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 18px;
+    }
+
+    .tip-card {
+      background: linear-gradient(140deg, #eff6ff 0%, #f0f9ff 100%);
+      border: 1px solid #bfdbfe;
+      border-radius: var(--radius);
+      padding: 24px 22px;
+    }
+    .tip-num  { font-size: 2rem; font-weight: 800; color: #bfdbfe; margin-bottom: 8px; }
+    .tip-card h4 { font-size: .96rem; font-weight: 700; margin-bottom: 6px; }
+    .tip-card p  { font-size: .87rem; color: var(--muted); line-height: 1.6; }
+
+    /* ─── FAQ ─────────────────────────────────────────────── */
+    .faq-list { max-width: 800px; }
+
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    .faq-btn {
+      width: 100%;
+      text-align: left;
+      background: var(--white);
+      border: none;
+      padding: 18px 22px;
+      font-size: .96rem;
+      font-weight: 600;
+      color: var(--dark);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      transition: background .14s;
+    }
+    .faq-btn:hover { background: var(--light); }
+
+    .faq-arrow {
+      flex-shrink: 0;
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: var(--light);
+      color: var(--muted);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .7rem;
+      transition: transform .25s, background .14s;
+    }
+    .faq-item.open .faq-arrow { transform: rotate(180deg); background: #dbeafe; color: var(--primary); }
+
+    .faq-body {
+      display: none;
+      padding: 0 22px 18px;
+      font-size: .91rem;
+      color: var(--muted);
+      line-height: 1.72;
+      background: var(--white);
+    }
+    .faq-item.open .faq-body { display: block; }
+
+    /* ─── GUIDES CTA ──────────────────────────────────────── */
+    .guides-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .guide-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 26px 24px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      text-decoration: none;
+      color: inherit;
+      transition: transform .18s, box-shadow .18s, border-color .18s;
+    }
+    .guide-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow);
+      border-color: #93c5fd;
+    }
+    .guide-card .g-ico { font-size: 1.8rem; flex-shrink: 0; margin-top: 2px; }
+    .guide-card h3 { font-size: .97rem; font-weight: 700; margin-bottom: 5px; }
+    .guide-card p  { font-size: .86rem; color: var(--muted); }
+    .guide-card .arrow-link {
+      margin-top: 10px;
+      font-size: .82rem;
+      font-weight: 600;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ─── DOWNLOAD ────────────────────────────────────────── */
+    #download {
+      background: linear-gradient(135deg, #1e40af 0%, var(--primary) 50%, #0369a1 100%);
+      color: var(--white);
+      text-align: center;
+    }
+
+    #download .section-eyebrow {
+      background: rgba(255,255,255,.18);
+      color: var(--white);
+    }
+
+    #download h2.section-title { color: var(--white); }
+    #download p.section-sub    { color: rgba(255,255,255,.72); max-width: 520px; margin: 0 auto 44px; }
+
+    .dl-box {
+      display: inline-block;
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 16px;
+      padding: 38px 44px;
+      max-width: 560px;
+      text-align: left;
+    }
+
+    .dl-box h3 { font-size: 1.45rem; font-weight: 800; margin-bottom: 8px; }
+    .dl-box .dl-sub { color: rgba(255,255,255,.7); font-size: .91rem; margin-bottom: 28px; }
+
+    .dl-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    .dl-meta { margin-top: 20px; font-size: .8rem; color: rgba(255,255,255,.5); }
+
+    /* ─── FOOTER ──────────────────────────────────────────── */
+    footer {
+      background: var(--dark);
+      color: #94a3b8;
+    }
+
+    .footer-top {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 60px 28px 48px;
+      display: grid;
+      grid-template-columns: 1.9fr 1fr 1fr 1fr;
+      gap: 48px;
+    }
+
+    .footer-brand img { height: 38px; width: auto; margin-bottom: 18px; filter: brightness(0) invert(1); opacity: .85; }
+    .footer-brand p { font-size: .88rem; line-height: 1.72; }
+    .footer-brand .disclaimer {
+      margin-top: 14px;
+      padding: 10px 14px;
+      background: rgba(255,255,255,.05);
+      border-left: 3px solid #334155;
+      border-radius: 0 6px 6px 0;
+      font-size: .8rem;
+      color: #64748b;
+      line-height: 1.6;
+    }
+
+    .footer-col h4 {
+      color: var(--white);
+      font-size: .85rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 10px; }
+    .footer-col a {
+      text-decoration: none;
+      color: #64748b;
+      font-size: .87rem;
+      transition: color .14s;
+    }
+    .footer-col a:hover { color: var(--white); }
+
+    .footer-bottom {
+      border-top: 1px solid #1e293b;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 22px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: .8rem;
+    }
+
+    .footer-bottom a { color: #475569; text-decoration: none; }
+    .footer-bottom a:hover { color: var(--white); }
+
+    /* ─── SCROLL-TO-TOP ───────────────────────────────────── */
+    #scrolltop {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: var(--white);
+      border: none;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      box-shadow: 0 4px 16px rgba(37,99,235,.45);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity .25s, transform .25s;
+      z-index: 300;
+    }
+    #scrolltop.visible { opacity: 1; transform: translateY(0); }
+    #scrolltop:hover { background: var(--primary-dark); }
+
+    /* ─── RESPONSIVE ──────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .footer-top { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 700px) {
+      .nav-links, .nav-cta { display: none; }
+      .hamburger { display: flex; }
+      .mobile-menu.open { display: flex; }
+      .specs-grid { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; gap: 32px; }
+      section { padding: 64px 20px; }
+      #hero { padding: 80px 20px 72px; }
+      .dl-box { padding: 28px 24px; }
+    }
+    @media (max-width: 480px) {
+      .hero-actions { flex-direction: column; align-items: center; }
+      .dl-actions   { flex-direction: column; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ HEADER ═══════════════════════════════════════════════ -->
+<header>
+  <nav>
+    <a href="#" class="logo">
+      <img
+        src="logo_128.png"
+        alt="Captora"
+      />
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="#" class="active">Home</a></li>
+      <li><a href="#download">Download</a></li>
+      <li><a href="#guides">Guides</a></li>
+      <li><a href="#faq">About</a></li>
+      <li><a href="#troubleshooting">Contact</a></li>
+    </ul>
+
+    <a href="#download" class="nav-cta">Get Started</a>
+
+    <button class="hamburger" aria-label="Menu" onclick="toggleMobileMenu()">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#">Home</a>
+    <a href="#download">Download</a>
+    <a href="#guides">Guides</a>
+    <a href="#faq">About</a>
+    <a href="#troubleshooting">Contact</a>
+    <a href="#download" class="nav-cta">Get Started</a>
+  </div>
+</header>
+
+<!-- ══ HERO ══════════════════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-inner">
+    <div class="hero-badge"><span class="dot"></span> Free &amp; Open Source · Windows</div>
+
+    <h1>Instantly Extract Text<br/>From <span class="highlight">Any Part of Your Screen</span></h1>
+
+    <p class="subtitle">
+      Captora lets you grab text from anywhere on screen using a simple keyboard shortcut.
+      No internet. No account. Completely private and offline.
+    </p>
+
+    <div class="hero-actions">
+      <a
+        href="https://github.com/CodeAIAgent-ctar/captora-ctar/releases/download/v4.6.3/CaptoraInstaller.exe"
+        class="btn btn-primary btn-lg"
+        onclick="return triggerDownload(event, 'https://github.com/CodeAIAgent-ctar/captora-ctar/releases/download/v4.6.3/CaptoraInstaller.exe')"
+      >
+        ⬇&nbsp; Download Captora v4.6.3
+      </a>
+      <a href="#how-it-works" class="btn btn-outline btn-lg">See How It Works</a>
+    </div>
+
+    <div class="hero-pills">
+      <span class="pill">🔒 100% Offline</span>
+      <span class="pill">🌐 90+ Languages</span>
+      <span class="pill">⚡ Win + Q Hotkey</span>
+      <span class="pill">🆓 GNU GPL v3</span>
+      <span class="pill">🪟 Windows 7–11</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FEATURES ══════════════════════════════════════════════ -->
+<section id="features" class="section-alt">
+  <div class="wrap">
+    <div class="section-eyebrow">Why Choose Captora?</div>
+    <h2 class="section-title">Everything you need, nothing you don't</h2>
+    <p class="section-sub">A lightweight, privacy-first OCR utility built for power users who need speed and accuracy.</p>
+
+    <div class="grid-3">
+      <div class="feature-card">
+        <div class="f-icon f-blue">⚡</div>
+        <h3>Ultra-Fast Text Extraction</h3>
+        <p>Press <strong>Win&nbsp;+&nbsp;Q</strong>, draw a box, and the text lands in your clipboard instantly. No menus, no uploads, no delays.</p>
+      </div>
+      <div class="feature-card">
+        <div class="f-icon f-green">🌐</div>
+        <h3>90+ Languages Supported</h3>
+        <p>Full support for Latin scripts, CJK (Chinese, Japanese, Korean), Arabic, Cyrillic, and more — via Tesseract language packs.</p>
+      </div>
+      <div class="feature-card">
+        <div class="f-icon f-purple">🔒</div>
+        <h3>100% Private &amp; Offline</h3>
+        <p>All OCR processing happens locally on your machine. Your screenshots never leave your computer — ever.</p>
+      </div>
+      <div class="feature-card">
+        <div class="f-icon f-orange">🌍</div>
+        <h3>One-Click Translation</h3>
+        <p>Captured text can be sent straight to Google Translate so you can read foreign-language content without copy-pasting.</p>
+      </div>
+      <div class="feature-card">
+        <div class="f-icon f-rose">⌨</div>
+        <h3>Full Hotkey Control</h3>
+        <p>Every action has a customizable keyboard shortcut. Switch languages, change output targets, and trigger captures — all from the keyboard.</p>
+      </div>
+      <div class="feature-card">
+        <div class="f-icon f-cyan">🎙</div>
+        <h3>Voice Recognition</h3>
+        <p>Experimental speech-to-text mode powered by Windows Speech Recognition for hands-free text input workflows.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ HOW IT WORKS ══════════════════════════════════════════ -->
+<section id="how-it-works">
+  <div class="wrap">
+    <div class="section-eyebrow">How To Use</div>
+    <h2 class="section-title">Three steps to instant OCR</h2>
+    <p class="section-sub">From zero to copied text in under two seconds.</p>
+
+    <div class="steps-row">
+      <div class="step">
+        <div class="step-badge">1</div>
+        <div>
+          <h3>Launch &amp; Setup</h3>
+          <p>Install Captora and optionally add Tesseract language packs. The app sits silently in your system tray, always ready when you need it.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-badge">2</div>
+        <div>
+          <h3>Select Area (Win&nbsp;+&nbsp;Q)</h3>
+          <p>Press <strong>Win&nbsp;+&nbsp;Q</strong> at any time. Your cursor becomes a crosshair — drag to draw a rectangle around the text you want to capture.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-badge">3</div>
+        <div>
+          <h3>Instant Result</h3>
+          <p>The recognized text is copied to your clipboard and shown in an optional popup window. Paste it anywhere immediately.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ USE CASES ══════════════════════════════════════════════ -->
+<section id="use-cases" class="section-alt">
+  <div class="wrap">
+    <div class="section-eyebrow">Real-World Uses</div>
+    <h2 class="section-title">Who uses Captora?</h2>
+    <p class="section-sub">From anime fans to developers — anyone who needs text off a screen benefits instantly.</p>
+
+    <div class="grid-4">
+      <div class="use-card">
+        <span class="emoji">📖</span>
+        <h3>Manga &amp; Anime Translation</h3>
+        <p>Capture Japanese text from manga panels and send it straight to your translation workflow.</p>
+      </div>
+      <div class="use-card">
+        <span class="emoji">🎮</span>
+        <h3>Game Text Capture</h3>
+        <p>Extract quest text, item descriptions, and story content from games that don't let you copy natively.</p>
+      </div>
+      <div class="use-card">
+        <span class="emoji">📄</span>
+        <h3>PDF Data Entry</h3>
+        <p>Pull data from scanned or locked PDFs into editable documents — no retyping required.</p>
+      </div>
+      <div class="use-card">
+        <span class="emoji">💻</span>
+        <h3>Coding &amp; Dev Work</h3>
+        <p>Capture error messages from VMs, remote sessions, or images where you can't select text normally.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ COMPARISON ════════════════════════════════════════════ -->
+<section id="comparison">
+  <div class="wrap">
+    <div class="section-eyebrow">Comparison</div>
+    <h2 class="section-title">How does it stack up?</h2>
+    <p class="section-sub">Captora versus the most popular alternatives.</p>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th class="col-hl">Captora</th>
+            <th>ShareX OCR</th>
+            <th>Snipping Tool</th>
+            <th>Online OCR APIs</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Offline / No Internet Required</td>
+            <td class="chk col-hl">✔</td>
+            <td class="chk">✔</td>
+            <td class="chk">✔</td>
+            <td class="crs">✘</td>
+          </tr>
+          <tr>
+            <td>Global Hotkey Capture</td>
+            <td class="chk col-hl">✔</td>
+            <td class="chk">✔</td>
+            <td class="prt">Partial</td>
+            <td class="crs">✘</td>
+          </tr>
+          <tr>
+            <td>90+ Language Support</td>
+            <td class="chk col-hl">✔</td>
+            <td class="prt">Partial</td>
+            <td class="crs">✘</td>
+            <td class="chk">✔</td>
+          </tr>
+          <tr>
+            <td>CJK (Chinese / Japanese / Korean)</td>
+            <td class="chk col-hl">✔</td>
+            <td class="prt">Partial</td>
+            <td class="crs">✘</td>
+            <td class="chk">✔</td>
+          </tr>
+          <tr>
+            <td>Direct Clipboard Output</td>
+            <td class="chk col-hl">✔</td>
+            <td class="chk">✔</td>
+            <td class="crs">✘</td>
+            <td class="crs">✘</td>
+          </tr>
+          <tr>
+            <td>Built-in Translation</td>
+            <td class="chk col-hl">✔</td>
+            <td class="crs">✘</td>
+            <td class="crs">✘</td>
+            <td class="prt">Partial</td>
+          </tr>
+          <tr>
+            <td>Completely Free &amp; Open Source</td>
+            <td class="chk col-hl">✔</td>
+            <td class="chk">✔</td>
+            <td class="chk">✔</td>
+            <td class="crs">✘</td>
+          </tr>
+          <tr>
+            <td>Data Stays On Your Machine</td>
+            <td class="chk col-hl">✔</td>
+            <td class="chk">✔</td>
+            <td class="chk">✔</td>
+            <td class="crs">✘</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="table-legend">✔ Fully supported &nbsp;·&nbsp; Partial = limited support &nbsp;·&nbsp; ✘ Not supported</p>
+  </div>
+</section>
+
+<!-- ══ TECH SPECS ════════════════════════════════════════════ -->
+<section id="specs" class="section-alt">
+  <div class="wrap">
+    <div class="section-eyebrow">Technical Specifications</div>
+    <h2 class="section-title">Under the hood</h2>
+    <p class="section-sub">Built on proven, battle-tested open-source technology.</p>
+
+    <div class="specs-grid">
+      <div class="spec-box">
+        <table>
+          <tr><td>OCR Engine</td><td>Tesseract OCR v5.x</td></tr>
+          <tr><td>License</td><td>GNU GPL v3</td></tr>
+          <tr><td>Architecture</td><td>64-bit &amp; 32-bit</td></tr>
+          <tr><td>OS Support</td><td>Windows 7 / 8 / 10 / 11</td></tr>
+        </table>
+      </div>
+      <div class="spec-box">
+        <table>
+          <tr><td>Output Modes</td><td>Clipboard, Popup, File</td></tr>
+          <tr><td>Languages</td><td>90+ via Tesseract packs</td></tr>
+          <tr><td>Privacy</td><td>100% offline processing</td></tr>
+          <tr><td>Author</td><td>Christopher Brochtrup</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ GUIDES ════════════════════════════════════════════════ -->
+<section id="guides">
+  <div class="wrap">
+    <div class="section-eyebrow">Guides</div>
+    <h2 class="section-title">Get the most out of Captora</h2>
+    <p class="section-sub">Step-by-step guides for common tasks and advanced configurations.</p>
+
+    <div class="guides-row">
+      <a href="#" class="guide-card">
+        <span class="g-ico">🌐</span>
+        <div>
+          <h3>How to Add More Languages</h3>
+          <p>Download and install additional Tesseract language packs to enable OCR in 90+ languages.</p>
+          <div class="arrow-link">Need More Languages? →</div>
+        </div>
+      </a>
+      <a href="#" class="guide-card">
+        <span class="g-ico">⌨</span>
+        <div>
+          <h3>Hotkey Setup Guide</h3>
+          <p>Customize every keyboard shortcut in Captora to perfectly fit your workflow and avoid conflicts.</p>
+          <div class="arrow-link">Shortcut Guide →</div>
+        </div>
+      </a>
+      <a href="#" class="guide-card">
+        <span class="g-ico">📚</span>
+        <div>
+          <h3>Full Manual</h3>
+          <p>The complete documentation covering every setting, feature, and advanced configuration option.</p>
+          <div class="arrow-link">View Full Manual →</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ OPTIMIZATION ══════════════════════════════════════════ -->
+<section id="optimization" class="section-alt">
+  <div class="wrap">
+    <div class="section-eyebrow">Optimization</div>
+    <h2 class="section-title">Get better accuracy</h2>
+    <p class="section-sub">Three quick settings that dramatically improve OCR results.</p>
+
+    <div class="grid-3">
+      <div class="feature-card">
+        <div class="f-icon f-blue">🔍</div>
+        <h3>OCR Scale Factor</h3>
+        <p>Increase the scale factor in <strong>Settings → OCR</strong> to upscale small or low-resolution text before recognition. A value of 2× or 3× often improves accuracy for small fonts dramatically.</p>
+      </div>
+      <div class="feature-card">
+        <div class="f-icon f-green">📝</div>
+        <h3>Whitelist Characters</h3>
+        <p>Capturing numbers-only content like prices or codes? Set a character whitelist to <code>0123456789</code> to eliminate misreads and speed up recognition.</p>
+      </div>
+      <div class="feature-card">
+        <div class="f-icon f-purple">📐</div>
+        <h3>Deskewing Images</h3>
+        <p>Enable the deskew option when capturing rotated or tilted text. Tesseract performs significantly better on straight, horizontal text lines.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TROUBLESHOOTING ═══════════════════════════════════════ -->
+<section id="troubleshooting">
+  <div class="wrap">
+    <div class="section-eyebrow">Troubleshooting</div>
+    <h2 class="section-title">Common issues &amp; fixes</h2>
+    <p class="section-sub">Quick answers to the most frequently reported problems.</p>
+
+    <div class="trouble-stack">
+      <div class="trouble-card">
+        <div class="t-ico">📂</div>
+        <div>
+          <h4>Tesseract data path not found</h4>
+          <p>Go to <strong>Settings → Tesseract</strong> and verify the path points to your <code>tessdata</code> folder. The default path is <code>C:\Program Files\Captora\tessdata</code>. Re-run the installer if the folder is missing.</p>
+        </div>
+      </div>
+      <div class="trouble-card">
+        <div class="t-ico">⚙️</div>
+        <div>
+          <h4>Application won't start or crashes on launch</h4>
+          <p>Install the latest <strong>Microsoft Visual C++ Redistributable (x64)</strong> from the official Microsoft website. Missing this runtime causes an immediate silent crash on many systems.</p>
+        </div>
+      </div>
+      <div class="trouble-card">
+        <div class="t-ico">🖥️</div>
+        <div>
+          <h4>Capture box is misaligned on high-DPI screens</h4>
+          <p>Right-click <code>Captora.exe</code> → Properties → Compatibility → Change high DPI settings → Override the scaling behavior, set it to <strong>Application</strong>. Apply and restart the app.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PRO TIPS ══════════════════════════════════════════════ -->
+<section id="tips" class="section-alt">
+  <div class="wrap">
+    <div class="section-eyebrow">Pro Tips</div>
+    <h2 class="section-title">Work smarter, not harder</h2>
+    <p class="section-sub">Power-user tricks to squeeze more speed out of Captora.</p>
+
+    <div class="tips-grid">
+      <div class="tip-card">
+        <div class="tip-num">01</div>
+        <h4>Clipboard-Only Mode</h4>
+        <p>Disable the result popup in Settings to make captures completely silent — text appears in your clipboard with zero interruption.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-num">02</div>
+        <h4>Use Character Whitelists</h4>
+        <p>For domain-specific captures like prices, codes, or dates, whitelists eliminate false positives and cut processing time significantly.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-num">03</div>
+        <h4>Hotkey Language Switching</h4>
+        <p>Assign a hotkey to each language you use frequently. Switch between English and Japanese OCR in milliseconds without touching the menu.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-num">04</div>
+        <h4>Contrast &amp; Preprocessing</h4>
+        <p>Enable preprocessing filters (grayscale + contrast boost) for difficult text on complex backgrounds to help Tesseract isolate characters cleanly.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FAQ ═══════════════════════════════════════════════════ -->
+<section id="faq">
+  <div class="wrap">
+    <div class="section-eyebrow">FAQ</div>
+    <h2 class="section-title">Frequently asked questions</h2>
+    <p class="section-sub" style="margin-bottom:36px;">Everything you wanted to know — without digging through forums.</p>
+
+    <div class="faq-list">
+      <div class="faq-item open">
+        <button class="faq-btn" onclick="toggleFaq(this)">
+          Is Captora really free?
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-body">
+          Yes, completely. Captora is released under the <strong>GNU General Public License v3</strong>, which means it is free to use, modify, and redistribute. There are no premium tiers, subscriptions, or hidden fees. The full source code is available on GitHub.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn" onclick="toggleFaq(this)">
+          Does it work on Windows 10 and Windows 11?
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-body">
+          Yes. Captora works on Windows 7, 8, 10, and 11 on both 32-bit and 64-bit systems. No special configuration is needed for Windows 11 — install and run.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn" onclick="toggleFaq(this)">
+          How can I improve OCR accuracy?
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-body">
+          The biggest single improvement is increasing the <strong>OCR Scale Factor</strong> in Settings. For domain-specific text, use character whitelists. Enabling deskew helps with tilted text. Capturing a slightly larger area around the target text also gives Tesseract more context, which improves results.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn" onclick="toggleFaq(this)">
+          My Win + Q hotkey doesn't work — what's wrong?
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-body">
+          Another application may have already registered the same hotkey. Open <strong>Settings → Hotkeys</strong> and reassign the capture shortcut to an unused combination. Common conflicts come from gaming software, launchers, or other screenshot tools.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ DOWNLOAD ══════════════════════════════════════════════ -->
+<section id="download">
+  <div class="wrap" style="text-align:center;">
+    <div class="section-eyebrow">Download</div>
+    <h2 class="section-title">Ready to start capturing?</h2>
+    <p class="section-sub">Free. No account needed. Works offline from the very first launch.</p>
+
+    <div class="dl-box">
+      <h3>Captora v4.6.3</h3>
+      <p class="dl-sub">Latest stable release · Windows 7/8/10/11 · 64-bit &amp; 32-bit · Tesseract OCR v5</p>
+      <div class="dl-actions">
+        <a
+          href="https://github.com/CodeAIAgent-ctar/captora-ctar/releases/download/v4.6.3/CaptoraInstaller.exe"
+          class="btn btn-white btn-lg"
+          onclick="return triggerDownload(event, 'https://github.com/CodeAIAgent-ctar/captora-ctar/releases/download/v4.6.3/CaptoraInstaller.exe')"
+        >
+          ⬇&nbsp; Download for Windows
+        </a>
+      </div>
+      <p class="dl-meta">Open source · GNU GPL v3 · Created by Christopher Brochtrup</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ════════════════════════════════════════════════ -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <img
+        src="logo_128.png"
+        alt="Captora"
+      />
+      <p>A free, open-source OCR tool for Windows that lets you extract text from anywhere on your screen using a simple keyboard shortcut. No cloud. No subscriptions. Just fast, private OCR.</p>
+      <div class="disclaimer">
+        This site is not the official developer website but an authorized community portal for the Captora project.
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Navigation</h4>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#download">Download</a></li>
+        <li><a href="#guides">Guides</a></li>
+        <li><a href="#faq">About</a></li>
+        <li><a href="#troubleshooting">Contact</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Guides</h4>
+      <ul>
+        <li><a href="#">How to Add Languages</a></li>
+        <li><a href="#">Hotkey Setup</a></li>
+        <li><a href="#">Full Manual</a></li>
+        <li><a href="#optimization">Optimization Tips</a></li>
+        <li><a href="#troubleshooting">Troubleshooting</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Resources</h4>
+      <ul>
+        <li><a href="#specs">Tech Specs</a></li>
+        <li><a href="#comparison">Comparison</a></li>
+        <li><a href="#tips">Pro Tips</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <span>© 2024 Captora · Created by Christopher Brochtrup · GNU GPL v3</span>
+    <span>
+      <a href="#">Disclaimer</a> &nbsp;·&nbsp;
+      Community-maintained · No bloatware · No tracking
+    </span>
+  </div>
+</footer>
+
+<!-- ══ SCROLL TO TOP ═════════════════════════════════════════ -->
+<button id="scrolltop" aria-label="Scroll to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">▲</button>
+
+<script>
+  // ── Download without leaving the page
+  // Works with any direct file URL (GitHub Releases, Google Drive, Dropbox dl=1, etc.)
+  function triggerDownload(e, url) {
+    e.preventDefault();
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'CaptoraInstaller.exe';
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  // ── FAQ accordion
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  // ── Mobile menu
+  function toggleMobileMenu() {
+    document.getElementById('mobileMenu').classList.toggle('open');
+  }
+
+  // ── Scroll-to-top button
+  const scrollBtn = document.getElementById('scrolltop');
+  window.addEventListener('scroll', () => {
+    scrollBtn.classList.toggle('visible', window.scrollY > 400);
+  });
+
+  // ── Active nav link on scroll
+  const sections  = document.querySelectorAll('section[id]');
+  const navAnchors = document.querySelectorAll('.nav-links a');
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navAnchors.forEach(a => a.classList.remove('active'));
+        const match = document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
+        if (match) match.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-35% 0px -60% 0px' });
+
+  sections.forEach(s => io.observe(s));
+
+  // ── Close mobile menu on link click
+  document.querySelectorAll('.mobile-menu a').forEach(a => {
+    a.addEventListener('click', () => {
+      document.getElementById('mobileMenu').classList.remove('open');
+    });
+  });
+</script>
+
+</body>
+</html>
